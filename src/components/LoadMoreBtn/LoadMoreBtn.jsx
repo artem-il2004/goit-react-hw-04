@@ -1,4 +1,4 @@
-import c from './LoadMore.module.css'
+import c from './LoadMoreBtn.module.css'
 function LoadMore({onClick }) {
   return (
     <div>

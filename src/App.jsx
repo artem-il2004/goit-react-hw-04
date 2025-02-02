@@ -3,8 +3,9 @@ import ImageGallery from './components/ImageGallery/ImageGallery';
 import Loader from "./components/Loader/Loader";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import LoadMore from "./components/Loadmore/LoadMore";
-import ErrorMassage from './components/ErrorMassage/ErrorMassage'
+import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
+import ErrorMassage from './components/ErrorMassage/ErrorMassage';
+import CustomModal from './components/ImageModal/ImageModal'; 
 
 function App() {
   const [inputValue, setInputValue] = useState("");
@@ -12,17 +13,24 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(null); 
+
+  const handleImageClick = (image) => {
+    setSelectedImage(image); 
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null); 
+  };
 
   const accessKey = "bw3QZmXz-5_eoE4qHympcDLtK-WHfQECIscbYjt4ALk";
 
-
-
   useEffect(() => {
     if (!inputValue) return;
-    
+
     async function fetchData() {
       setLoading(true);
-      setError(false); 
+      setError(false);
       try {
         const response = await axios.get("https://api.unsplash.com/search/photos", {
           params: {
@@ -50,15 +58,15 @@ function App() {
     fetchData();
   }, [inputValue, page]);
 
-  const formSub = e => { 
+  const formSub = e => {
     e.preventDefault();
     const value = e.target.elements.inputField.value;
-    if (!value.trim()) { 
+    if (!value.trim()) {
       setError(true);
       return;
     }
     setInputValue(value);
-    setPage(1); 
+    setPage(1);
   }
 
   const handleLoadMore = () => {
@@ -68,10 +76,20 @@ function App() {
   return (
     <>
       <SearchBar formSub={formSub} />
-      {loading && <Loader/> }
-      {error && <ErrorMassage/>}
-      {results.length > 0 && <ImageGallery results={results} />}
-      {results.length > 0 && <LoadMore onClick={handleLoadMore} />}
+      {loading && <Loader />}
+      {error && <ErrorMassage />}
+      {results.length > 0 && (
+        <ImageGallery results={results} onImageClick={handleImageClick} /> 
+      )}
+      {results.length > 0 && <LoadMoreBtn onClick={handleLoadMore} />}
+
+      {/* Модальне вікно */}
+      {selectedImage && (
+        <CustomModal isOpen={!!selectedImage} onRequestClose={closeModal}>
+          <img src={selectedImage.urls.regular} alt={selectedImage.alt_description} />
+          <p>{selectedImage.description}</p>
+        </CustomModal>
+      )}
     </>
   );
 }
