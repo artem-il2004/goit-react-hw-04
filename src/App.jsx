@@ -13,14 +13,14 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(null); 
+  const [selectedImage, setSelectedImage] = useState(false); 
 
   const handleImageClick = (image) => {
     setSelectedImage(image); 
   };
 
   const closeModal = () => {
-    setSelectedImage(null); 
+    setSelectedImage(false); 
   };
 
   const accessKey = "bw3QZmXz-5_eoE4qHympcDLtK-WHfQECIscbYjt4ALk";
